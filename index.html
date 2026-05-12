@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Finance Dashboard - Fixed</title>
+    <title>Finance Dashboard - With ID</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -58,18 +58,18 @@
 
         <div class="glass rounded-[1.5rem] md:rounded-[2rem] shadow-xl border border-white/50 overflow-hidden">
             <div class="p-4 md:p-6 border-b sticky top-0 bg-white/80 backdrop-blur-md z-10 flex items-center justify-between">
-                <h2 class="text-base md:text-xl font-bold text-slate-900">Timeline</h2>
+                <h2 class="text-base md:text-xl font-bold text-slate-900">Timeline Transaksi</h2>
                 <button id="refreshBtn" class="flex items-center gap-2 text-xs bg-blue-600 text-white px-3 py-2 md:px-5 md:py-2.5 rounded-lg hover:bg-blue-700 transition-all">
                     <svg id="refreshIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     <span>Refresh</span>
                 </button>
             </div>
-            <div id="timeline" class="p-3 md:p-6 space-y-3 max-h-[500px] overflow-y-auto"></div>
+            <div id="timeline" class="p-3 md:p-6 space-y-3 max-h-[600px] overflow-y-auto"></div>
         </div>
     </div>
 
     <script>
-        // GANTI URL DI BAWAH DENGAN URL WEB APP TERBARU SETELAH DEPLOY ULANG
+        // GANTI URL DI BAWAH DENGAN URL WEB APP TERBARU ANDA
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-GZfeckMrccMu9GeQo-b85EiFxBiJBGlY7hkuAKQ75AC2keL3I83wIltyBgm435sgwg/exec";
 
         const totalEl = document.getElementById('totalPengeluaran');
@@ -95,7 +95,6 @@
 
                 if (data.error) throw new Error(data.error);
 
-                // Pastikan 'jumlah' dibaca sebagai angka
                 const total = data.reduce((acc, item) => acc + (parseFloat(item.jumlah) || 0), 0);
                 const avg = data.length ? total / data.length : 0;
 
@@ -106,7 +105,7 @@
                 renderTimeline([...data].reverse(), avg);
             } catch (err) {
                 console.error(err);
-                timelineEl.innerHTML = `<p class="text-center text-red-500 text-xs py-10">Gagal memuat data. Periksa koneksi atau URL Web App.</p>`;
+                timelineEl.innerHTML = `<p class="text-center text-red-500 text-xs py-10">Gagal memuat data.</p>`;
             } finally {
                 refreshBtn.disabled = false;
                 refreshIcon.classList.remove('animate-spin');
@@ -126,9 +125,16 @@
                 return `
                     <div class="fade-in bg-white/60 border border-slate-100 rounded-xl p-3 md:p-4 shadow-sm">
                         <div class="flex justify-between items-center gap-2">
-                            <div class="min-w-0 flex-1">
-                                <p class="text-sm md:text-base font-bold text-slate-800 truncate">${item.deskripsi || 'Transaksi'}</p>
-                                <p class="text-[10px] md:text-xs text-slate-400 mt-1">${item.tanggal}</p>
+                            <div class="min-w-0 flex-1 flex gap-3 items-start">
+                                <span class="bg-blue-100 text-blue-600 font-bold text-[10px] md:text-xs px-2 py-1 rounded-md shrink-0">
+                                    #${item.id}
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="text-sm md:text-base font-bold text-slate-800 truncate">
+                                        ${item.deskripsi || 'Transaksi'}
+                                    </p>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">${item.tanggal}</p>
+                                </div>
                             </div>
                             <div class="text-right shrink-0 flex flex-col items-end gap-2">
                                 <p class="text-sm md:text-lg font-black ${isHigh ? 'text-red-500' : 'text-blue-600'}">${formatRupiah(jumlah)}</p>
@@ -144,7 +150,7 @@
             const btn = e.target.closest('.hapus-btn');
             if (!btn) return;
             const id = btn.dataset.id;
-            if (confirm('Hapus transaksi ini?')) {
+            if (confirm(`Hapus transaksi nomor ${id}?`)) {
                 btn.innerText = '...';
                 await fetch(`${WEB_APP_URL}?action=delete&id=${id}`);
                 muatData();
