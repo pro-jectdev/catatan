@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Finance Dashboard</title>
+    <title>Finance Dashboard - Professional</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -26,49 +26,54 @@
         }
 
         .glass {
-            background: rgba(255,255,255,0.75);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
         }
 
         .fade-in {
-            animation: fade .25s ease;
+            animation: fade .25s ease-out;
         }
 
         @keyframes fade {
             from {
                 opacity: 0;
-                transform: translateY(6px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
+        /* Transisi halus untuk angka */
+        #totalPengeluaran, #jumlahTransaksi, #rataPengeluaran {
+            transition: all 0.5s ease-in-out;
+        }
     </style>
 </head>
 
-<body class="min-h-screen p-4 md:p-8 text-slate-800">
+<body class="min-h-screen p-4 md:p-8 pb-20 text-slate-800">
 
     <div class="max-w-7xl mx-auto">
 
-        <!-- HEADER -->
+        <!-- HEADER SECTION -->
         <div class="grid lg:grid-cols-[1fr_320px] gap-6 mb-8 items-stretch">
             <div class="glass rounded-[2rem] p-6 md:p-8 shadow-xl border border-white/50 flex-1 overflow-hidden">
                 <p class="uppercase tracking-[0.3em] text-xs font-bold text-blue-600 mb-4">
                     FINANCE TRACKER
                 </p>
 
-               <h1 class="text-[1.9rem] sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight break-words">
-    Dashboard <span class="text-blue-600">Keuangan</span>
-</h1>
+                <h1 class="text-[1.9rem] sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight break-words">
+                    Dashboard <span class="text-blue-600">Keuangan</span>
+                </h1>
 
                 <p class="mt-5 text-slate-500 max-w-2xl">
-                    Monitoring pengeluaran keluarga.
+                    Monitoring pengeluaran keluarga secara real-time dan terstruktur.
                 </p>
             </div>
 
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-[2rem] p-8 text-white shadow-2xl min-w-[320px] flex flex-col justify-center">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-2xl min-w-[320px] flex flex-col justify-center transition-transform hover:scale-[1.02]">
                 <p class="uppercase tracking-[0.3em] text-xs font-bold opacity-80 mb-4">
                     Total Pengeluaran
                 </p>
@@ -83,14 +88,10 @@
         </div>
 
 
-        <!-- SUMMARY -->
+        <!-- SUMMARY CARDS -->
         <div class="mb-8 grid md:grid-cols-2 gap-5">
-
             <div class="glass rounded-3xl p-6 shadow border border-white/50">
-                <p class="text-slate-400 text-sm mb-2">
-                    Jumlah Transaksi
-                </p>
-
+                <p class="text-slate-400 text-sm mb-2 font-medium">Jumlah Transaksi</p>
                 <h3
                     id="jumlahTransaksi"
                     class="text-3xl md:text-4xl font-bold text-slate-900"
@@ -100,10 +101,7 @@
             </div>
 
             <div class="glass rounded-3xl p-6 shadow border border-white/50">
-                <p class="text-slate-400 text-sm mb-2">
-                    Rata-rata Pengeluaran
-                </p>
-
+                <p class="text-slate-400 text-sm mb-2 font-medium">Rata-rata Pengeluaran</p>
                 <h3
                     id="rataPengeluaran"
                     class="text-3xl md:text-4xl font-bold text-slate-900"
@@ -111,53 +109,49 @@
                     Rp 0
                 </h3>
             </div>
-
         </div>
 
 
-        <!-- TIMELINE -->
+        <!-- TIMELINE SECTION -->
         <div class="glass rounded-[2rem] shadow-xl border border-white/50 overflow-hidden">
-
-            <div class="p-6 border-b sticky top-0 bg-white/70 backdrop-blur-md z-10 flex items-center justify-between">
+            <div class="p-6 border-b sticky top-0 bg-white/80 backdrop-blur-md z-10 flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl font-bold">Timeline Transaksi</h2>
-                    <p class="text-xs text-slate-400 mt-1">
-                        Auto refresh setiap 30 detik
-                    </p>
+                    <h2 class="text-xl font-bold text-slate-900">Timeline Transaksi</h2>
+                    <p class="text-xs text-slate-400 mt-1">Data terbaru dari Google Sheets</p>
                 </div>
 
                 <button
                     id="refreshBtn"
-                    class="text-xs bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+                    class="inline-flex items-center gap-2 text-sm bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-lg shadow-blue-200"
                 >
+                    <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     Refresh
                 </button>
             </div>
 
             <div
                 id="timeline"
-                class="p-4 md:p-6 space-y-3 max-h-[520px] overflow-y-auto"
-            ></div>
-
+                class="p-4 md:p-6 space-y-4 max-h-[600px] overflow-y-auto"
+            >
+                <!-- Konten diisi via JS -->
+            </div>
         </div>
     </div>
 
 
     <script>
-
-        // GANTI DENGAN URL WEB APP ANDA
+        // CONFIGURATION
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-GZfeckMrccMu9GeQo-b85EiFxBiJBGlY7hkuAKQ75AC2keL3I83wIltyBgm435sgwg/exec";
 
-
-        // ELEMENT
+        // ELEMENTS
         const totalEl = document.getElementById('totalPengeluaran');
         const jumlahEl = document.getElementById('jumlahTransaksi');
         const rataEl = document.getElementById('rataPengeluaran');
         const timelineEl = document.getElementById('timeline');
         const refreshBtn = document.getElementById('refreshBtn');
+        const refreshIcon = document.getElementById('refreshIcon');
 
-
-        // FORMAT RUPIAH
+        // UTILS: Format Rupiah
         function formatRupiah(num) {
             return new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -166,186 +160,162 @@
             }).format(num || 0);
         }
 
+        // UTILS: Format Tanggal yang lebih manusiawi
+        function formatTanggal(dateString) {
+            if (!dateString || dateString === '-') return '-';
+            try {
+                const date = new Date(dateString);
+                return new Intl.DateTimeFormat('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }).format(date);
+            } catch (e) {
+                return dateString;
+            }
+        }
 
-        // LOADING
+        // UI: Loading State
+        function setBtnLoading(isLoading) {
+            if (isLoading) {
+                refreshBtn.disabled = true;
+                refreshBtn.classList.add('opacity-70', 'cursor-not-allowed');
+                refreshIcon.classList.add('animate-spin');
+            } else {
+                refreshBtn.disabled = false;
+                refreshBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
         function showLoading() {
             timelineEl.innerHTML = `
-                <div class="text-center py-10 text-slate-400">
-                    Memuat data...
+                <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+                    <div class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+                    <p class="font-medium">Sinkronisasi data...</p>
                 </div>
             `;
         }
 
-
-        // ERROR
-        function showError(message) {
-            timelineEl.innerHTML = `
-                <div class="text-center py-10 text-red-500">
-                    ${message}
-                </div>
-            `;
-        }
-
-
-        // FETCH DATA
+        // API: Fetch Data
         async function muatData() {
-
             try {
-
-                refreshBtn.disabled = true;
-                refreshBtn.textContent = 'Loading...';
-
-                showLoading();
+                setBtnLoading(true);
+                if (timelineEl.children.length === 0) showLoading();
 
                 const response = await fetch(`${WEB_APP_URL}?action=read`);
                 const data = await response.json();
 
-                if (!Array.isArray(data)) {
-                    throw new Error('Format data tidak valid');
-                }
+                if (!Array.isArray(data)) throw new Error('Format data tidak valid');
 
-
-                // SUMMARY
-                const total = data.reduce((acc, item) => {
-                    return acc + (Number(item.jumlah) || 0);
-                }, 0);
-
+                // Kalkulasi Summary
+                const total = data.reduce((acc, item) => acc + (Number(item.jumlah) || 0), 0);
                 const avg = data.length ? total / data.length : 0;
 
+                // Update Header
                 totalEl.textContent = formatRupiah(total);
-                jumlahEl.textContent = data.length;
+                jumlahEl.textContent = data.length.toLocaleString('id-ID');
                 rataEl.textContent = formatRupiah(avg);
 
-
-                // RENDER
+                // Render List
                 renderTimeline([...data].reverse(), avg);
 
-            }
-            catch (err) {
+            } catch (err) {
                 console.error(err);
-                showError('Gagal memuat data');
-            }
-            finally {
-                refreshBtn.disabled = false;
-                refreshBtn.textContent = 'Refresh';
+                timelineEl.innerHTML = `
+                    <div class="text-center py-10">
+                        <p class="text-red-500 font-semibold">Gagal memuat data</p>
+                        <p class="text-xs text-slate-400 mt-2">Pastikan URL Web App benar dan CORS diaktifkan</p>
+                    </div>
+                `;
+            } finally {
+                setBtnLoading(false);
             }
         }
 
-
-        // RENDER TIMELINE
+        // UI: Render Timeline
         function renderTimeline(data, avg) {
-
             if (!data.length) {
                 timelineEl.innerHTML = `
-                    <div class="text-center text-slate-400 py-10">
-                        Belum ada transaksi
+                    <div class="text-center text-slate-400 py-16">
+                        <p class="text-3xl mb-2">📄</p>
+                        <p>Belum ada riwayat transaksi</p>
                     </div>
                 `;
                 return;
             }
 
-
-            let html = '';
-
-            data.forEach(item => {
-
+            timelineEl.innerHTML = data.map(item => {
                 const jumlah = Number(item.jumlah) || 0;
-
-                const isBig =
-                    jumlah >= 100000 ||
-                    jumlah >= (avg * 1.5);
-
-                const badge = isBig
-                    ? `<span class="text-[10px] bg-red-100 text-red-500 px-2 py-1 rounded-full ml-2">Besar</span>`
-                    : '';
-
-
-                html += `
-                    <div class="fade-in bg-white/70 border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
-
-                        <div class="flex items-start justify-between gap-3">
-
+                
+                // Indikator pengeluaran di atas rata-rata atau di atas 500rb
+                const isHigh = jumlah > (avg * 1.5) || jumlah > 500000;
+                
+                return `
+                    <div class="fade-in bg-white/60 border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
+                        <div class="flex items-start justify-between gap-4">
                             <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-slate-800 break-words">
-                                    ${item.deskripsi || '-'}
-                                    ${badge}
-                                </p>
-
-                                <p class="text-xs text-slate-400 mt-1">
-                                    ${item.tanggal || '-'}
+                                <div class="flex items-center gap-2 mb-1">
+                                    <p class="font-bold text-slate-800 truncate">
+                                        ${item.deskripsi || 'Tanpa Deskripsi'}
+                                    </p>
+                                    ${isHigh ? '<span class="shrink-0 text-[9px] uppercase font-black bg-orange-100 text-orange-600 px-2 py-0.5 rounded">High</span>' : ''}
+                                </div>
+                                <p class="text-xs text-slate-500 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    ${formatTanggal(item.tanggal)}
                                 </p>
                             </div>
 
-                            <div class="text-right font-bold ${isBig ? 'text-red-500' : 'text-blue-600'} flex flex-col items-end gap-2 shrink-0">
-
-                                <span>
+                            <div class="text-right shrink-0">
+                                <p class="font-extrabold ${isHigh ? 'text-red-600' : 'text-blue-700'} text-lg">
                                     ${formatRupiah(jumlah)}
-                                </span>
-
+                                </p>
                                 <button
-                                    class="hapus-btn text-[10px] text-slate-400 hover:text-red-500 transition"
+                                    class="hapus-btn text-[11px] font-bold text-slate-400 hover:text-red-500 mt-2 flex items-center justify-end gap-1 ml-auto transition-colors"
                                     data-id="${item.id}"
+                                    aria-label="Hapus transaksi"
                                 >
-                                    🗑 Hapus
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Hapus
                                 </button>
-
                             </div>
                         </div>
                     </div>
                 `;
-            });
-
-            timelineEl.innerHTML = html;
+            }).join('');
         }
 
-
-        // DELETE
-        async function hapusTransaksi(id) {
-
-            const confirmDelete = confirm('Yakin mau hapus transaksi ini?');
-
-            if (!confirmDelete) return;
+        // ACTION: Delete Transaction
+        async function hapusTransaksi(id, btnElement) {
+            if (!confirm('Hapus transaksi ini secara permanen?')) return;
 
             try {
-
-                await fetch(
-                    `${WEB_APP_URL}?action=delete&id=${id}`
-                );
-
+                btnElement.innerHTML = 'Memproses...';
+                btnElement.classList.add('animate-pulse', 'text-orange-500');
+                
+                await fetch(`${WEB_APP_URL}?action=delete&id=${id}`);
+                
+                // Refresh data setelah hapus
                 muatData();
-
-            }
-            catch (err) {
+            } catch (err) {
                 console.error(err);
-                alert('Gagal menghapus transaksi');
+                alert('Gagal menghapus data. Coba lagi nanti.');
+                muatData(); // Reset UI
             }
         }
 
-
-        // EVENT DELETE
+        // EVENT LISTENERS
         timelineEl.addEventListener('click', (e) => {
-
             const btn = e.target.closest('.hapus-btn');
-
-            if (!btn) return;
-
-            const id = btn.dataset.id;
-
-            if (id) {
-                hapusTransaksi(id);
+            if (btn && btn.dataset.id) {
+                hapusTransaksi(btn.dataset.id, btn);
             }
         });
 
-
-        // BUTTON REFRESH
         refreshBtn.addEventListener('click', muatData);
-
-
-        // AUTO REFRESH
-        setInterval(() => {
-            muatData();
-        }, 30000);
-
 
         // INITIAL LOAD
         window.onload = muatData;
