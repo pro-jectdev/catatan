@@ -24,7 +24,6 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Custom scrollbar untuk timeline */
         #timeline::-webkit-scrollbar { width: 4px; }
         #timeline::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
@@ -99,7 +98,6 @@
             }).format(num || 0);
         }
 
-        // Tanggal yang lebih ringkas untuk Mobile (01/01/26 12:00)
         function formatTanggal(dateString) {
             if (!dateString || dateString === '-') return '-';
             try {
@@ -148,7 +146,7 @@
                 
                 return `
                     <div class="fade-in bg-white/60 border border-slate-100 rounded-xl p-3 md:p-4 shadow-sm">
-                        <div class="flex justify-between items-start gap-2">
+                        <div class="flex justify-between items-center gap-2">
                             <div class="min-w-0 flex-1">
                                 <p class="text-sm md:text-base font-bold text-slate-800 truncate leading-tight">
                                     ${item.deskripsi || 'Transaksi'}
@@ -157,11 +155,14 @@
                                     ${formatTanggal(item.tanggal)}
                                 </p>
                             </div>
-                            <div class="text-right shrink-0">
+                            <div class="text-right shrink-0 flex flex-col items-end gap-2">
                                 <p class="text-sm md:text-lg font-black ${isHigh ? 'text-red-500' : 'text-blue-600'}">
                                     ${formatRupiah(jumlah)}
                                 </p>
-                                <button class="hapus-btn text-[10px] font-medium text-slate-300 hover:text-red-400 mt-1" data-id="${item.id}">
+                                <button 
+                                    class="hapus-btn px-2 py-1 border border-red-200 text-red-500 hover:bg-red-50 rounded-md text-[10px] font-bold transition-all active:scale-95" 
+                                    data-id="${item.id}"
+                                >
                                     Hapus
                                 </button>
                             </div>
@@ -175,8 +176,10 @@
             const btn = e.target.closest('.hapus-btn');
             if (!btn) return;
             const id = btn.dataset.id;
-            if (confirm('Hapus?')) {
+            if (confirm('Hapus transaksi ini?')) {
+                const originalText = btn.innerText;
                 btn.innerText = '...';
+                btn.disabled = true;
                 await fetch(`${WEB_APP_URL}?action=delete&id=${id}`);
                 muatData();
             }
