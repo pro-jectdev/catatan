@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -59,7 +58,6 @@
             background: #cbd5e1;
             border-radius: 999px;
         }
-
     </style>
 </head>
 
@@ -68,88 +66,61 @@
 <div class="max-w-5xl mx-auto space-y-6">
 
     <div class="card-base p-8 md:p-14 shadow-xl bg-gradient-to-r from-white to-indigo-50">
-
         <h1 class="text-[28px] sm:text-[42px] md:text-6xl font-extrabold text-slate-900 leading-tight whitespace-nowrap">
             <span class="inline">Dashboard</span>
             <span class="inline text-indigo-600">Keuangan</span>
         </h1>
-
         <p class="text-base md:text-xl text-slate-500 mt-4 italic font-medium">
             Beli yang butuh, bukan yang mau.
         </p>
-
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
         <div class="bg-indigo-600 rounded-[24px] p-6 text-white shadow-md">
-
             <p class="text-xs uppercase tracking-widest opacity-80 font-bold">
                 Total Pengeluaran
             </p>
-
             <h2 id="totalPengeluaran" class="text-4xl font-extrabold mt-3 text-white">
                 Rp 0
             </h2>
-
         </div>
 
         <div class="card-base p-6 shadow-sm">
-
             <p class="text-xs uppercase tracking-widest text-slate-400 font-bold">
                 Jumlah Transaksi
             </p>
-
             <h2 id="jumlahTransaksi" class="text-4xl font-extrabold mt-3">
                 0
             </h2>
-
         </div>
-
     </div>
 
     <div class="card-base overflow-hidden shadow-sm">
-
         <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
-
             <div>
-
                 <h2 class="font-bold text-slate-700 text-xs uppercase tracking-widest">
                     Riwayat Transaksi
                 </h2>
-
             </div>
 
             <button
                 id="refreshBtn"
-                class="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-4 py-2 rounded-full font-bold transition flex items-center gap-2"
+                class="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-5 py-2 rounded-full font-bold transition flex items-center justify-center"
             >
-
-                <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 4v5h5m11 11v-5h-5m5-6a8 8 0 00-13.657-5.657L4 9m16 6l-2.343 2.343A8 8 0 016 9" />
-                </svg>
-
                 Refresh
-
             </button>
-
         </div>
 
         <div id="timeline" class="p-5 space-y-4">
-
             <div class="text-center py-10 text-slate-400 animate-pulse italic text-sm">
                 Memuat data transaksi...
             </div>
-
         </div>
-
     </div>
 
 </div>
 
 <script>
-
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzUluARvax-2UKx8YLCllJ24wJXiDSmkJJ_WbOVButV_pPMJ7OlNA2yrahM65g3TuqkVQ/exec";
     const CACHE_KEY = "finance_dashboard_cache_data";
 
@@ -157,7 +128,7 @@
     const jumlahEl = document.getElementById('jumlahTransaksi');
     const timelineEl = document.getElementById('timeline');
     const refreshBtn = document.getElementById('refreshBtn');
-    const refreshIcon = document.getElementById('refreshIcon');
+    const refreshIcon = document.getElementById('refreshIcon'); // Bernilai null karena di HTML sudah dihapus
 
     function formatRupiah(num) {
         return new Intl.NumberFormat('id-ID', {
@@ -221,9 +192,8 @@
         if (refreshBtn.disabled) return; // Mencegah spam klik beruntun
 
         try {
-
             refreshBtn.disabled = true;
-            refreshIcon.classList.add('animate-spin');
+            if (refreshIcon) refreshIcon.classList.add('animate-spin'); // Amankan efek spin agar tidak crash
 
             const response = await fetch(`${WEB_APP_URL}?action=read`);
             const data = await response.json();
@@ -232,14 +202,12 @@
 
             // Simpan data terbaru ke dalam memori lokal browser
             localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-
             prosesDanTampilkanData(data);
 
         } catch (err) {
-
             console.error(err);
 
-            // Jika offline/gagal internet, coba ambil data cadangan dari memori lokal terlebih dahulu
+            // Jika offline/gagal internet, ambil data cadangan dari memori lokal
             const dataLokal = localStorage.getItem(CACHE_KEY);
             if (dataLokal) {
                 prosesDanTampilkanData(JSON.parse(dataLokal));
@@ -248,95 +216,65 @@
 
             timelineEl.innerHTML = `
                 <div class="text-center py-10">
-
-                    <p class="text-red-500 font-bold">
-                        Data gagal dimuat
-                    </p>
-
+                    <p class="text-red-500 font-bold">Data gagal dimuat</p>
                     <p class="text-xs text-slate-400 mt-2">
                         Terjadi kesalahan saat mengambil data server. Periksa koneksi internet Anda.
                     </p>
-
                 </div>
             `;
-
         } finally {
-
             refreshBtn.disabled = false;
-            refreshIcon.classList.remove('animate-spin');
-
+            if (refreshIcon) refreshIcon.classList.remove('animate-spin'); // Amankan efek spin agar tidak crash
         }
     }
 
     function render(data) {
-
         if (!data.length) {
-
             timelineEl.innerHTML = `
-                <p class="text-center py-10 text-slate-400 italic">
-                    Belum ada transaksi.
-                </p>
+                <p class="text-center py-10 text-slate-400 italic">Belum ada transaksi.</p>
             `;
-
             return;
         }
 
         timelineEl.innerHTML = data.map(item => {
-
             const jumlah = parseFloat(item.jumlah) || 0;
             const badge = getBadgeStyle(item.deskripsi);
             const tanggalDiformat = formatTanggal(item.tanggal);
             const deskripsiAman = batasiTeks(item.deskripsi);
 
             return `
-
                 <div class="card-base p-5 shadow-sm border border-slate-100 bg-white fade-in">
-
                     <div class="flex justify-between items-start gap-4">
-
                         <div class="min-w-0">
-
                             <div class="flex items-center gap-3 mb-3">
-
                                 <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 text-slate-500 font-bold">
                                     #${item.id || '0'}
                                 </span>
-
                                 <span class="text-[11px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${badge.bg}">
                                     ${badge.label}
                                 </span>
-
                             </div>
-
                             <p class="text-sm md:text-base font-bold text-slate-800 break-words">
                                 ${deskripsiAman}
                             </p>
-
                             <p class="text-xs text-slate-400 mt-2">
                                 ${tanggalDiformat}
                             </p>
-
                         </div>
-
                         <div class="shrink-0 text-right">
-
                             <p class="text-indigo-700 font-black text-sm md:text-lg">
                                 ${formatRupiah(jumlah)}
                             </p>
-
                         </div>
-
                     </div>
-
                 </div>
-
             `;
         }).join('');
     }
 
     refreshBtn.addEventListener('click', muatData);
 
-    // Pertama kali dimuat, periksa memori lokal agar data tampil instan tanpa kedap-kedip loading
+    // Pertama kali dimuat, periksa memori lokal agar data tampil instan
     window.onload = () => {
         const dataLokal = localStorage.getItem(CACHE_KEY);
         if (dataLokal) {
@@ -346,10 +284,9 @@
                 localStorage.removeItem(CACHE_KEY);
             }
         }
-        // Jalankan fetch sinkronisasi data terbaru dari server di background
+        // Jalankan sinkronisasi data terbaru dari server di background
         muatData();
     };
-
 </script>
 
 </body>
